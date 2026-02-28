@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>公共卫生考研初试成绩排名</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pku-red: #8C1515;
+    --pku-red-light: #B03A2E;
+    --pku-red-pale: #F9EAEA;
+    --pku-gold: #C4923C;
+    --pku-gold-light: #F0D080;
+    --pku-gold-pale: #FDF8EE;
+    --bg: #F5F4F0;
+    --white: #FFFFFF;
+    --surface2: #F7F5F2;
+    --border: #E0DAD0;
+    --border-dark: #C8BFB0;
+    --text: #1A1208;
+    --text-mid: #4A3F30;
+    --text-muted: #8A7A65;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'Noto Serif SC',serif; min-height:100vh; }
+  .topbar { background:var(--pku-red); height:5px; }
+  .header-wrap { background:#fff; border-bottom:1px solid var(--border); box-shadow:0 2px 12px rgba(140,21,21,0.08); }
+  header { max-width:1140px; margin:0 auto; padding:24px; display:flex; align-items:center; gap:18px; }
+  .pku-seal { width:60px; height:60px; background:var(--pku-red); border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 8px rgba(140,21,21,0.3); }
+  .header-text h1 { font-size:22px; font-weight:700; color:var(--pku-red); letter-spacing:2px; }
+  .header-text .sub { margin-top:5px; font-size:12px; color:var(--text-muted); }
+  .header-text .sub span { display:inline-block; background:var(--pku-gold-pale); border:1px solid var(--pku-gold-light); color:var(--pku-gold); border-radius:3px; padding:1px 7px; font-size:11px; font-weight:600; margin-right:5px; }
+  .main { max-width:1140px; margin:0 auto; padding:24px; display:grid; grid-template-columns:360px 1fr; gap:22px; align-items:start; }
+  @media(max-width:860px){.main{grid-template-columns:1fr;}}
+  .left-col { display:flex; flex-direction:column; gap:20px; }
+  .card { background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+  .card-head { background:linear-gradient(135deg,var(--pku-red) 0%,var(--pku-red-light) 100%); padding:12px 20px; display:flex; align-items:center; gap:8px; }
+  .card-head.gold { background:linear-gradient(135deg,#8C6820 0%,var(--pku-gold) 100%); }
+  .card-head h2 { font-size:12px; font-weight:600; color:#fff; letter-spacing:2px; text-transform:uppercase; }
+  .card-head .dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.5); }
+  .card-body { padding:20px; }
+  .form-group { margin-bottom:13px; }
+  label { display:block; font-size:12px; color:var(--text-muted); margin-bottom:4px; font-weight:500; }
+  input, select { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); padding:9px 12px; font-size:14px; font-family:inherit; outline:none; transition:border-color .2s, box-shadow .2s; }
+  input:focus, select:focus { border-color:var(--pku-red); box-shadow:0 0 0 3px rgba(140,21,21,0.08); background:#fff; }
+  .score-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:9px; }
+  .score-row label { font-size:11px; }
+  .btn { width:100%; padding:11px; border:none; border-radius:6px; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; transition:all .18s; letter-spacing:1px; }
+  .btn-red { background:var(--pku-red); color:#fff; margin-top:5px; box-shadow:0 2px 6px rgba(140,21,21,0.25); }
+  .btn-red:hover { background:var(--pku-red-light); transform:translateY(-1px); }
+  .btn-red:disabled { background:#ccc; cursor:not-allowed; transform:none; box-shadow:none; }
+  .btn-del { background:transparent; color:var(--pku-red); border:1px solid rgba(140,21,21,0.3); padding:5px 10px; width:auto; font-size:12px; border-radius:4px; cursor:pointer; }
+  .btn-del:hover { background:var(--pku-red-pale); }
+  .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+  .stat-card { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:12px; text-align:center; }
+  .stat-label { font-size:11px; color:var(--text-muted); margin-bottom:4px; }
+  .stat-value { font-size:21px; font-weight:700; font-family:'JetBrains Mono',monospace; color:var(--pku-red); }
+  .sec-label { font-size:11px; font-weight:600; color:var(--text-muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:9px; }
+  .dist-item { margin-bottom:7px; }
+  .dist-row { display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:3px; }
+  .prog-bar { height:5px; background:var(--surface2); border-radius:3px; overflow:hidden; border:1px solid var(--border); }
+  .prog-fill { height:100%; border-radius:3px; transition:width .5s ease; }
+  .filter-row { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; }
+  .filter-row input, .filter-row select { flex:1; min-width:120px; }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  thead th { background:var(--surface2); padding:10px 13px; text-align:left; font-size:11px; color:var(--text-muted); letter-spacing:1px; border-bottom:2px solid var(--border-dark); white-space:nowrap; font-weight:600; }
+  thead th.sort { cursor:pointer; user-select:none; }
+  thead th.sort:hover { color:var(--pku-red); }
+  tbody tr { border-bottom:1px solid var(--border); transition:background .12s; }
+  tbody tr:last-child { border-bottom:none; }
+  tbody tr:hover { background:var(--pku-red-pale); }
+  tbody td { padding:11px 13px; vertical-align:middle; }
+  .badge { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; font-weight:700; font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .b1 { background:#C4923C; color:#fff; box-shadow:0 2px 5px rgba(196,146,60,.4); }
+  .b2 { background:#8A9BB0; color:#fff; }
+  .b3 { background:#A0734A; color:#fff; }
+  .bx { background:var(--surface2); color:var(--text-muted); border:1px solid var(--border); }
+  .num { font-family:'JetBrains Mono',monospace; color:var(--text-mid); }
+  .tot { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--pku-red); font-size:14px; }
+  .stag { display:inline-block; background:var(--pku-red-pale); color:var(--pku-red); border:1px solid rgba(140,21,21,0.15); border-radius:4px; padding:2px 8px; font-size:11px; font-weight:500; }
+  .note-t { font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .empty { text-align:center; padding:50px; color:var(--text-muted); font-size:14px; }
+  .empty .ico { font-size:38px; opacity:.35; margin-bottom:10px; }
+  /* Toast */
+  .toast { position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:#333; color:#fff; padding:10px 22px; border-radius:8px; font-size:13px; opacity:0; transition:opacity .3s; pointer-events:none; z-index:999; }
+  .toast.show { opacity:1; }
+  /* Modal */
+  .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; align-items:center; justify-content:center; }
+  .modal-bg.open { display:flex; }
+  .modal { background:#fff; border-radius:10px; padding:28px; width:320px; box-shadow:0 8px 32px rgba(0,0,0,0.15); }
+  .modal h3 { font-size:16px; color:var(--pku-red); margin-bottom:14px; }
+  .modal input { margin-bottom:14px; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:9px; border:none; border-radius:6px; cursor:pointer; font-family:inherit; font-size:13px; font-weight:600; }
+  .modal-confirm { background:var(--pku-red); color:#fff; }
+  .modal-cancel { background:var(--surface2); color:var(--text-mid); border:1px solid var(--border) !important; }
+  /* Loading spinner */
+  .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; margin-right:6px; vertical-align:middle; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="topbar"></div>
+<div class="header-wrap">
+  <header>
+    
+    <div class="header-text">
+      <h1>公共卫生考研 · 初试成绩排名系统</h1>
+      <div class="sub">
+        <span>政治 满100</span><span>英语 满100</span><span>353综合 满300</span>总分满500分 · 数据实时共享
+      </div>
+    </div>
+  </header>
+</div>
+
+<div class="main">
+  <div class="left-col">
+
+    <!-- 录入表单 -->
+    <div class="card">
+      <div class="card-head"><div class="dot"></div><h2>录入成绩</h2></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>昵称</label>
+          <input id="inp-nick" type="text" placeholder="考生昵称" autocomplete="off"/>
+        </div>
+        <div class="form-group">
+          <label>报考院校（可从列表选择，也可手动输入）</label>
+          <input id="inp-school" type="text" list="school-list" placeholder="输入或选择院校..." autocomplete="off"/>
+          <datalist id="school-list">
+            <option>北京大学</option><option>北京协和医学院</option><option>首都医科大学</option>
+            <option>中国疾病预防控制中心</option><option>复旦大学</option><option>上海交通大学</option>
+            <option>同济大学</option><option>海军军医大学</option><option>中山大学</option>
+            <option>南方医科大学</option><option>暨南大学</option><option>华中科技大学</option>
+            <option>武汉大学</option><option>中南大学</option><option>郑州大学</option>
+            <option>四川大学</option><option>重庆医科大学</option><option>昆明医科大学</option>
+            <option>贵州医科大学</option><option>南京医科大学</option><option>浙江大学</option>
+            <option>苏州大学</option><option>安徽医科大学</option><option>山东大学</option>
+            <option>温州医科大学</option><option>中国医科大学</option><option>哈尔滨医科大学</option>
+            <option>吉林大学</option><option>大连医科大学</option><option>天津医科大学</option>
+            <option>河北医科大学</option><option>山西医科大学</option><option>内蒙古医科大学</option>
+            <option>西安交通大学</option><option>兰州大学</option><option>宁夏医科大学</option>
+            <option>新疆医科大学</option><option>青海大学</option>
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label>三门初试成绩</label>
+          <div class="score-row">
+            <div><label>政治（满100）</label><input id="inp-s1" type="number" min="0" max="100" placeholder="0-100"/></div>
+            <div><label>英语（满100）</label><input id="inp-s2" type="number" min="0" max="100" placeholder="0-100"/></div>
+            <div><label>353综合（满300）</label><input id="inp-s3" type="number" min="0" max="300" placeholder="0-300"/></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>备注（可选）</label>
+          <input id="inp-note" type="text" placeholder="调剂生、推免等"/>
+        </div>
+        <button class="btn btn-red" id="submit-btn" onclick="submitScore()">＋ 添加记录</button>
+      </div>
+    </div>
+
+    <!-- 统计 -->
+    <div class="card">
+      <div class="card-head gold"><div class="dot"></div><h2>数据概览</h2></div>
+      <div class="card-body">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-label">总人数</div><div class="stat-value" id="s-count">—</div></div>
+          <div class="stat-card"><div class="stat-label">平均总分</div><div class="stat-value" id="s-avg">—</div></div>
+          <div class="stat-card"><div class="stat-label">最高总分</div><div class="stat-value" id="s-max">—</div></div>
+        </div>
+        <div class="sec-label">353 综合分布</div>
+        <div id="dist-bars"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 排名表 -->
+  <div class="card">
+    <div class="card-head"><div class="dot"></div><h2>成绩排名榜</h2></div>
+    <div class="card-body">
+      <div class="filter-row">
+        <input id="f-nick" type="text" placeholder="搜索昵称..." oninput="renderTable()"/>
+        <select id="f-school" onchange="renderTable()"><option value="">全部院校</option></select>
+        <select id="f-sort" onchange="renderTable()">
+          <option value="total">按总分排序</option>
+          <option value="s3">按353排序</option>
+          <option value="s1">按政治排序</option>
+          <option value="s2">按英语排序</option>
+        </select>
+        <button class="btn-del" onclick="loadScores()" title="刷新数据">↻ 刷新</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>排名</th><th>昵称</th><th>院校</th>
+              <th class="sort" onclick="setSort('s1')">政治 ↕</th>
+              <th class="sort" onclick="setSort('s2')">英语 ↕</th>
+              <th class="sort" onclick="setSort('s3')">353综合 ↕</th>
+              <th class="sort" onclick="setSort('total')">总分 ↕</th>
+              <th>删除</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div id="empty" class="empty"><div class="ico">📋</div>暂无数据，请在左侧添加成绩</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 删除确认 Modal -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3>🔐 管理员验证</h3>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">删除记录需要管理员密码</p>
+    <input id="modal-pwd" type="password" placeholder="请输入管理员密码"/>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">取消</button>
+      <button class="modal-confirm" onclick="confirmDelete()">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 配置：把这里改成你服务器的地址 ──────────────────────────
+// 用 file:// 打开时自动请求本地 Flask；通过 http 访问时同域留空即可
+var API_BASE = (typeof location !== 'undefined' && (location.protocol === 'file:' || location.origin === 'null'))
+  ? 'http://127.0.0.1:5001'
+  : '';
+// ──────────────────────────────────────────────────────────────
+
+var allRecords = [];
+var pendingDeleteId = null;
+
+// ── API ────────────────────────────────────────────────────────
+function apiFetch(path, options) {
+  return fetch(API_BASE + path, options).then(function(r) {
+    if (!r.ok) return r.json().then(function(d){ throw new Error(d.error || '请求失败'); });
+    return r.json();
+  });
+}
+
+function loadScores() {
+  apiFetch('/api/scores').then(function(data) {
+    allRecords = data;
+    updateFilters();
+    updateStats();
+    renderTable();
+  }).catch(function(e) {
+    showToast('加载失败：' + e.message, true);
+  });
+}
+
+function submitScore() {
+  var nick   = document.getElementById('inp-nick').value.trim();
+  var school = document.getElementById('inp-school').value.trim();
+  var s1v    = document.getElementById('inp-s1').value;
+  var s2v    = document.getElementById('inp-s2').value;
+  var s3v    = document.getElementById('inp-s3').value;
+  var note   = document.getElementById('inp-note').value.trim();
+
+  if (!nick)              { showToast('请输入昵称', true); return; }
+  if (!school)            { showToast('请输入或选择院校', true); return; }
+  if (!s1v||!s2v||!s3v)  { showToast('请填写三门成绩', true); return; }
+
+  var s1 = parseFloat(s1v), s2 = parseFloat(s2v), s3 = parseFloat(s3v);
+  if (isNaN(s1)||s1<0||s1>100) { showToast('政治成绩应在 0-100 之间', true); return; }
+  if (isNaN(s2)||s2<0||s2>100) { showToast('英语成绩应在 0-100 之间', true); return; }
+  if (isNaN(s3)||s3<0||s3>300) { showToast('353综合应在 0-300 之间', true); return; }
+
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>提交中...';
+
+  apiFetch('/api/scores', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({nick:nick, school:school, s1:s1, s2:s2, s3:s3, note:note})
+  }).then(function() {
+    ['inp-nick','inp-school','inp-s1','inp-s2','inp-s3','inp-note'].forEach(function(id){
+      document.getElementById(id).value = '';
+    });
+    showToast('添加成功 ✓');
+    loadScores();
+  }).catch(function(e) {
+    showToast('添加失败：' + e.message, true);
+  }).finally(function() {
+    btn.disabled = false;
+    btn.innerHTML = '＋ 添加记录';
+  });
+}
+
+// ── 删除 Modal ─────────────────────────────────────────────────
+function askDelete(id) {
+  pendingDeleteId = id;
+  document.getElementById('modal-pwd').value = '';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(function(){ document.getElementById('modal-pwd').focus(); }, 100);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  pendingDeleteId = null;
+}
+
+function confirmDelete() {
+  var pwd = document.getElementById('modal-pwd').value;
+  if (!pwd) { showToast('请输入密码', true); return; }
+
+  apiFetch('/api/scores/' + pendingDeleteId, {
+    method: 'DELETE',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({password: pwd})
+  }).then(function() {
+    closeModal();
+    showToast('已删除 ✓');
+    loadScores();
+  }).catch(function(e) {
+    showToast(e.message, true);
+  });
+}
+
+// ── 渲染 ───────────────────────────────────────────────────────
+function updateFilters() {
+  var sel = document.getElementById('f-school');
+  var cur = sel.value;
+  var schools = [];
+  allRecords.forEach(function(r){ if(schools.indexOf(r.school)<0) schools.push(r.school); });
+  schools.sort();
+  var html = '<option value="">全部院校</option>';
+  schools.forEach(function(s){ html += '<option'+(s===cur?' selected':'')+'>'+s+'</option>'; });
+  sel.innerHTML = html;
+}
+
+function updateStats() {
+  var n = allRecords.length;
+  document.getElementById('s-count').textContent = n || '0';
+  if (!n) {
+    document.getElementById('s-avg').textContent = '—';
+    document.getElementById('s-max').textContent = '—';
+    document.getElementById('dist-bars').innerHTML = '';
+    return;
+  }
+  var sum=0, mx=0;
+  allRecords.forEach(function(r){ sum+=r.total; if(r.total>mx) mx=r.total; });
+  document.getElementById('s-avg').textContent = (sum/n).toFixed(1);
+  document.getElementById('s-max').textContent = mx;
+
+  var ranges=[[0,150],[150,180],[180,200],[200,220],[220,250],[250,301]];
+  var labels=['< 150','150–180','180–200','200–220','220–250','250+'];
+  var colors=['#C8503A','#C4923C','#8C7040','#5A7A8C','#3A7A5C','#8C1515'];
+  var html='';
+  ranges.forEach(function(rng,i){
+    var cnt=0;
+    allRecords.forEach(function(r){ if(r.s3>=rng[0]&&r.s3<rng[1]) cnt++; });
+    var pct=cnt/n*100;
+    html+='<div class="dist-item">'
+      +'<div class="dist-row"><span>'+labels[i]+'</span><span>'+cnt+' 人</span></div>'
+      +'<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%;background:'+colors[i]+'"></div></div>'
+      +'</div>';
+  });
+  document.getElementById('dist-bars').innerHTML = html;
+}
+
+function setSort(val) {
+  document.getElementById('f-sort').value = val;
+  renderTable();
+}
+
+function renderTable() {
+  var fn     = document.getElementById('f-nick').value.trim().toLowerCase();
+  var fs     = document.getElementById('f-school').value;
+  var sortBy = document.getElementById('f-sort').value;
+
+  var filtered = allRecords.filter(function(r){
+    if(fn && r.nick.toLowerCase().indexOf(fn)<0) return false;
+    if(fs && r.school!==fs) return false;
+    return true;
+  });
+  filtered.sort(function(a,b){ return b[sortBy]-a[sortBy]; });
+
+  var tbody = document.getElementById('tbody');
+  var empty = document.getElementById('empty');
+  if(!filtered.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  var html='';
+  filtered.forEach(function(d,i){
+    var rank=i+1;
+    var bc=rank===1?'b1':rank===2?'b2':rank===3?'b3':'bx';
+    var ri=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    html+='<tr>'
+      +'<td><span class="badge '+bc+'">'+ri+'</span></td>'
+      +'<td><strong>'+esc(d.nick)+'</strong>'+(d.note?'<div class="note-t">'+esc(d.note)+'</div>':'')+'</td>'
+      +'<td><span class="stag">'+esc(d.school)+'</span></td>'
+      +'<td class="num">'+d.s1+'</td>'
+      +'<td class="num">'+d.s2+'</td>'
+      +'<td class="num">'+d.s3+'</td>'
+      +'<td class="tot">'+d.total+'</td>'
+      +'<td><button class="btn-del" onclick="askDelete('+d.id+')">删除</button></td>'
+      +'</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Toast ──────────────────────────────────────────────────────
+var toastTimer;
+function showToast(msg, isErr) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isErr ? '#C0392B' : '#2D6A4F';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+// 按 Enter 关闭 Modal
+document.getElementById('modal-pwd').addEventListener('keydown', function(e){
+  if(e.key==='Enter') confirmDelete();
+});
+
+// 初始加载
+loadScores();
+
+// 每 30 秒自动刷新一次
+setInterval(loadScores, 30000);
+</script>
+</body>
+</html>
